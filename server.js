@@ -4,35 +4,21 @@
 
 var express = require('express');
 
+var bodyParser = require('body-parser');
+
+var jsonParser = bodyParser.json();
+
 var app = express();
 
-var db = require("./DatabaseConnection/mysql");
 
 
+var routes = require("./routes/users");
 
+app.get('/users', routes.getUsers);
 
+app.get('/users/:id', routes.getUsersById);
 
-app.get('/users', function (req, res) {
-    db.query('SELECT * FROM user WHERE id=1', function (err, result) {
-        // Neat!
-        if (!err) {
-            console.log(result);
-        } else {
-            console.log(err)
-        }
-    });
-});
-
-app.get('/users/:id', function (req, res) {
-    db.query('SELECT * FROM user WHERE id=?', req.params.id, function (err, result) {
-        // Neat!
-        if (!err) {
-            res.json(result);
-        } else {
-            console.log(err)
-        }
-    });
-});
+app.post("/register", jsonParser, routes.register);
 
 
 

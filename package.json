@@ -1,12 +1,27 @@
 {
   "name": "kuippana-backend",
   "version": "1.0.0",
-  "description": "",
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "run": "node server.js"
+    "run": "node server.js",
+    "start": "node server.js"
+  },
+  "dependencies": {
+    "body-parser": "^1.17.1",
+    "express": "^4.15.2",
+    "mysql": "^2.13.0"
   },
   "author": "",
-  "license": "ISC"
+  "license": "ISC",
+  "devDependencies": {},
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/eetukallio/KuippanaBackend.git"
+  },
+  "bugs": {
+    "url": "https://github.com/eetukallio/KuippanaBackend/issues"
+  },
+  "homepage": "https://github.com/eetukallio/KuippanaBackend#readme",
+  "description": ""
 }
