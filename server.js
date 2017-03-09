@@ -36,7 +36,7 @@ passport.use(new LocalStrategy(
 
         if (err) { return done(err); }
 
-        if (!user) {
+        if (!user.length) {
 
             return done(null, false, { message: 'Incorrect username.' });
         }
