@@ -2,6 +2,7 @@
  * Created by eetukallio on 8.3.2017.
  */
 
+const mysql = require('mysql');
 const express = require('express');
 const bodyParser = require('body-parser');
 const cookieParser = require('cookie-parser');
