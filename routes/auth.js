@@ -6,5 +6,7 @@
 
 module.exports.login = function (req, res) {
 
-    res.redirect("http://www.google.com");
+    res.json({
+        login: true
+    });
 };
