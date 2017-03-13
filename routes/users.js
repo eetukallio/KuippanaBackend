@@ -5,7 +5,7 @@
 const db = require("../DatabaseConnection/mysql");
 
 module.exports.getUsers = function (req, res) {
-    db.query('SELECT * FROM user WHERE id=1', function (err, result) {
+    db.query('SELECT * FROM user', function (err, result) {
 
         if (!err) {
 
