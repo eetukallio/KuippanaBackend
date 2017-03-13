@@ -2,21 +2,19 @@
  * Created by eetukallio on 8.3.2017.
  */
 
-const mysql = require('mysql');
-const express = require('express');
-const bodyParser = require('body-parser');
-const cookieParser = require('cookie-parser');
-const expressSession = require("express-session");
-
-const passport = require('passport'), LocalStrategy = require('passport-local').Strategy;
-const db = require("./DatabaseConnection/mysql");
+const mysql               = require('mysql');
+const express             = require('express');
+const bodyParser          = require('body-parser');
+const cookieParser        = require('cookie-parser');
+const expressSession      = require("express-session");
+const passport            = require('passport'), LocalStrategy = require('passport-local').Strategy;
+const db                  = require("./DatabaseConnection/mysql");
 const jsonParser = bodyParser.json();
 
 const app = express();
 
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(cookieParser());
-
 app.use(expressSession({
     secret: "secret",
     resave: true,
@@ -26,9 +24,11 @@ app.use(expressSession({
 app.use(passport.initialize());
 app.use(passport.session());
 
-const userRoutes = require("./routes/users");
-const authRoutes = require("./routes/auth");
-
+const userRoutes          = require("./routes/users");
+const authRoutes          = require("./routes/auth");
+const qualityRoutes       = require("./routes/qualities");
+const clientRoutes        = require("./routes/clients");
+const orderRoutes         = require("./routes/workOrders");
 
 passport.use(new LocalStrategy(
     function(username, password, done) {
@@ -78,6 +78,9 @@ app.post("/register", jsonParser, userRoutes.register);
 
 app.post("/login", passport.authenticate('local') , authRoutes.login);
 
+app.delete("/users/:id", userRoutes.deleteUser);
+
+app.put("/users/:id", jsonParser, userRoutes.updateUsersById);
 
 
 app.listen(3000);
