@@ -12,6 +12,7 @@ const db                  = require("./DatabaseConnection/mysql");
 const jsonParser          = bodyParser.json();
 const app                 = express();
 const localStrategy       = require("./auth/passport");
+const cors                = require("cors")
 
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(cookieParser());
@@ -23,6 +24,7 @@ app.use(expressSession({
 }));
 app.use(passport.initialize());
 app.use(passport.session());
+app.use(cors());
 
 const userRoutes          = require("./routes/users");
 const authRoutes          = require("./routes/auth");
