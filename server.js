@@ -12,9 +12,10 @@ const db                  = require("./DatabaseConnection/mysql");
 const jsonParser          = bodyParser.json();
 const app                 = express();
 const localStrategy       = require("./auth/passport");
-const cors                = require("cors")
+const cors                = require("cors");
 
-app.use(bodyParser.urlencoded({ extended: false }));
+app.use(bodyParser.urlencoded({ extended: true }));
+app.use(jsonParser);
 app.use(cookieParser());
 app.use(expressSession({
     secret: "secret",
@@ -49,7 +50,16 @@ passport.deserializeUser(function (id, done) {
 });
 
 //API-route for initial login authentication
-app.post("/login", passport.authenticate('local') , authRoutes.login);
+app.post("/login", function (req, res, next) {
+    passport.authenticate('local', function (err, user, info) {
+        console.log(req.body);
+        if (err) {return next(err)}
+        if (!user) {return res.json({message: info.message})}
+        res.json({
+            loggedIn: true,
+            isEmployer: user.isEmployer});
+    }) (req, res, next);
+});
 
 
 //API-routes for USER related queries
@@ -81,5 +91,5 @@ app.delete("/qualities/:id", qualityRoutes.deleteQuality);
 app.put("/qualities/:id", jsonParser, qualityRoutes.updateQualityById);
 
 console.log("Server running");
-app.listen(3000);
+app.listen(8080);
 
