@@ -1,12 +1,18 @@
-/**
- * Created by eetukallio on 9.3.2017.
- */
+const   AuthController  = require('../controllers/authentication'),
+        express         = require('express'),
+        passportService = require('../auth/passport'),
+        passport        = require('passport');
 
+const requireAuth = passport.authenticate('jwt', {session: false});
+const requireLogin = passport.authenticate('local', {session: false});
 
+module.exports = function(app) {
+    const apiRoutes = express.Router();
+    const authRoutes = express.Router();
 
-module.exports.login = function (req, res) {
+    apiRoutes.use('/auth', authRoutes);
 
-    res.json({
-        login: true
-    });
+    authRoutes.post('/login', requireLogin, AuthController.login);
+
+    app.use('/api', apiRoutes);
 };
