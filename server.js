@@ -2,65 +2,33 @@
  * Created by eetukallio on 8.3.2017.
  */
 
-const mysql               = require('mysql');
 const express             = require('express');
 const bodyParser          = require('body-parser');
 const cookieParser        = require('cookie-parser');
-const expressSession      = require("express-session");
-const passport            = require('passport'), LocalStrategy = require('passport-local').Strategy;
-const db                  = require("./DatabaseConnection/mysql");
+const passport            = require('passport');
 const jsonParser          = bodyParser.json();
 const app                 = express();
-const localStrategy       = require("./auth/passport");
 const cors                = require("cors");
+const logger              = require('morgan');
 
+app.use(logger('dev'));
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(jsonParser);
 app.use(cookieParser());
-app.use(expressSession({
-    secret: "secret",
-    resave: true,
-    saveUninitialized: false,
-    cookie: { maxAge: 36000 }
-}));
-app.use(passport.initialize());
-app.use(passport.session());
-app.use(cors());
 
+app.use(function(req, res, next) {
+   res.header("Access-Control-Allow-Origin", "*");
+   res.header("Access-Control-Allow-Methods", "PUT, GET, POST, DELETE, OPTIONS");
+   res.header("Access-Control-Allow-Headers", "Origin, X-Requested-Width, Content-Type, Accept, Authorization, Access-Control-Allow-Credentials");
+   res.header("Access-Control-Allow-Credentials", "true");
+   next();
+});
+
+const authRouter          = require('./routes/auth');
 const userRoutes          = require("./routes/users");
-const authRoutes          = require("./routes/auth");
 const qualityRoutes       = require("./routes/qualities");
 const clientRoutes        = require("./routes/clients");
 const orderRoutes         = require("./routes/workOrders");
-
-passport.use(localStrategy);
-
-passport.serializeUser(function (user, done) {
-    console.log('serializeUser: ' + user.id);
-    done(null, user.id);
-});
-
-passport.deserializeUser(function (id, done) {
-    const user = db.query("SELECT * FROM user WHERE id = ?", id, function(err, user){
-        console.log(user);
-        if(!err) done(null, user);
-        else done(err, null)
-    });
-    done(user);
-});
-
-//API-route for initial login authentication
-app.post("/login", function (req, res, next) {
-    passport.authenticate('local', function (err, user, info) {
-        console.log(req.body);
-        if (err) {return next(err)}
-        if (!user) {return res.json({message: info.message})}
-        res.json({
-            loggedIn: true,
-            isEmployer: user.isEmployer});
-    }) (req, res, next);
-});
-
 
 //API-routes for USER related queries
 app.get('/users', userRoutes.getUsers);
@@ -90,6 +58,8 @@ app.post("/qualities", jsonParser, qualityRoutes.addQuality);
 app.delete("/qualities/:id", qualityRoutes.deleteQuality);
 app.put("/qualities/:id", jsonParser, qualityRoutes.updateQualityById);
 
-console.log("Server running");
+console.log("Server running at port 8080");
 app.listen(8080);
+
+authRouter(app);
 
