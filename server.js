@@ -58,8 +58,8 @@ app.post("/qualities", jsonParser, qualityRoutes.addQuality);
 app.delete("/qualities/:id", qualityRoutes.deleteQuality);
 app.put("/qualities/:id", jsonParser, qualityRoutes.updateQualityById);
 
-console.log("Server running at port 8080");
-app.listen(8080);
+console.log("Server running at port 3000");
+app.listen(3000);
 
 authRouter(app);
 
