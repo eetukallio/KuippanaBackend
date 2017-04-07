@@ -10,8 +10,9 @@ function generateToken(user) {
 }
 
 function setUserInfo(request) {
+    console.log(request.id);
     return {
-        id: request.id,
+        _id: request.id,
         firstName: request.firstName,
         lastName: request.lastName,
         email: request.email,
@@ -25,7 +26,7 @@ exports.login = function(req, res, next) {
     let userInfo = setUserInfo(req.user);
 
     res.status(200).json({
-        token: 'JWT ' + generateToken(userInfo),
+        token: `JWT ${generateToken(userInfo)}`,
         user: userInfo
     });
 };
@@ -33,9 +34,8 @@ exports.login = function(req, res, next) {
 // Employer check
 exports.employerCheck = function(isEmployer) {
     return function(req, res, next) {
-        const user = req;
 
-        db.query("SELECT * FROM user WHERE id = ?", user.id, function (err, foundUser) {
+        db.query("SELECT * FROM user WHERE id = ?", req.id, function (err, foundUser) {
             if (err) {
                 res.status(422).json({error: 'No user was found'});
                 return next(err);
