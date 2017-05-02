@@ -1,7 +1,7 @@
 const db = require("../DatabaseConnection/mysql");
 
 module.exports.getWorkOrders = function (req, res) {
-    db.query('SELECT CONCAT(user.firstName, \' \', user.lastName) As fullName, client.name AS clientName, duration, quality.name as quality, user.id AS userId, date, additionalInfo ' +
+    db.query('SELECT CONCAT(user.firstName, \' \', user.lastName) As fullName, client.name AS clientName, duration, workOrder.id as id, quality.name as quality, user.id AS userId, date, additionalInfo ' +
     'FROM workOrder ' +
     'INNER JOIN user ON workOrder.user = user.id ' +
     'INNER JOIN client ON workOrder.client = client.id ' +
