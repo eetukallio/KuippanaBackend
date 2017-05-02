@@ -3,6 +3,7 @@
  */
 
 const db = require("../DatabaseConnection/mysql");
+const bcrypt = require('bcrypt');
 
 module.exports.getUsers = function (req, res) {
     db.query('SELECT * FROM user', function (err, result) {
@@ -52,22 +53,30 @@ module.exports.updateUsersById = function (req, res) {
 };
 
 module.exports.register = function (req, res) {
-
     if(!req.body) return res.sendStatus(400);
     const data = req.body;
-    db.query("INSERT INTO user SET ?", data, function (err, result) {
+    console.log(data);
+    let password = data.password;
+    bcrypt.genSalt(5, function(err, salt) {
+        bcrypt.hash(password, salt, function(err, hash) {
+            data.password = hash;
+            console.log(hash);
+            console.log(data);
+            db.query("INSERT INTO user SET ?", data, function (err, result) {
 
-        if (!err) {
-            res.status(201);
-            res.json(result);
-        } else {
-            console.log(err);
-            res.status(500);
-            res.json({
-                message: "Something went terribly wrong!"
-            });
-        }
-    })
+                if (!err) {
+                    res.status(201);
+                    res.json(result);
+                } else {
+                    console.log(err);
+                    res.status(500);
+                    res.json({
+                        message: "Something went terribly wrong!"
+                    });
+                }
+            })
+        });
+    });
 };
 
 module.exports.deleteUser = function (req, res) {

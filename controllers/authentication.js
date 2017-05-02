@@ -12,7 +12,7 @@ function generateToken(user) {
 function setUserInfo(request) {
     console.log(request.id);
     return {
-        _id: request.id,
+        id: request.id,
         firstName: request.firstName,
         lastName: request.lastName,
         email: request.email,

@@ -4,6 +4,7 @@ const   db              = require("../DatabaseConnection/mysql"),
         JwtStrategy     = require('passport-jwt').Strategy,
         ExtractJwt      = require('passport-jwt').ExtractJwt,
         secret          = require('./jwt_secret_key');
+        bcrypt          = require('bcrypt');
 
 const localLogin = new LocalStrategy({usernameField: 'username'},
      function(username, password, done) {
@@ -14,12 +15,14 @@ const localLogin = new LocalStrategy({usernameField: 'username'},
                  return done(null, false, { message: 'Incorrect username.' });
              }
 
-             if (!(user[0].password == password)) {
-                 return done(null, false, { message: 'Incorrect password.' });
-             }
+             bcrypt.compare(password, user[0].password, function(err, isMatch) {
+                 if (err) { return done(err); }
+                 if (!isMatch) { return done(null, false, { error: "Your login details could not be verified. Please try again." }); }
+
+                 return done(null, user[0]);
+             });
 
              console.log(user[0].id);
-             return done(null, user[0]);
          })
      });
 
@@ -30,7 +33,7 @@ const jwtOptions = {
 
 const jwtLogin = new JwtStrategy(jwtOptions, function (payload, done) {
     console.log("Payload: " + payload);
-    db.query("SELECT * FROM user WHERE id = ?", payload._id, function (err, user) {
+    db.query("SELECT * FROM user WHERE id = ?", payload.id, function (err, user) {
         if (err) { return done(err, false); }
 
         if (user) {
