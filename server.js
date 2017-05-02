@@ -63,7 +63,7 @@ app.delete("/qualities/:id", requireAuth, qualityRoutes.deleteQuality);
 app.put("/qualities/:id", requireAuth, jsonParser, qualityRoutes.updateQualityById);
 
 console.log("Server running at port 3000");
-app.listen(8080);
+app.listen(3000);
 
 
 
