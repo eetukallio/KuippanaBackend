@@ -1,0 +1,1 @@
+module.exports = {'secret': 'well it\'s a bloody secret innit'};
